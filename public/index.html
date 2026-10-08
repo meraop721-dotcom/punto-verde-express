@@ -1,86 +1,33 @@
+
 <!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b5b36">
-<meta name="description" content="Punto Verde Express — Menús & Parrillas">
-<link rel="manifest" href="/manifest.webmanifest">
 <title>Punto Verde Express</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{--green:#0b5b36;--green2:#0f7143;--cream:#f7f5ee;--gold:#f1a52a;--ink:#173b29;--muted:#66756d;--white:#fff;--line:#e5e9e4;--shadow:0 10px 30px rgba(17,55,38,.10)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:78px}
-button,input,select{font:inherit}.app{max-width:980px;margin:auto}
-.top{background:linear-gradient(135deg,#073e25,#0b5b36 65%,#167448);color:white;padding:18px 18px 28px;border-radius:0 0 28px 28px;box-shadow:var(--shadow)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:11px}.mark{width:46px;height:46px;border-radius:15px;background:var(--gold);display:grid;place-items:center;font-size:25px;box-shadow:0 5px 15px #0003}.brand h1{font-size:20px;line-height:1.05;margin:0}.brand span{display:block;color:#d8efdf;font-size:12px;margin-top:4px}
-.cartbtn{border:0;background:#ffffff18;color:white;border:1px solid #ffffff2e;border-radius:14px;padding:10px 13px;font-weight:800}.hero{margin-top:24px}.eyebrow{color:#ffd07a;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}.hero h2{font-size:31px;line-height:1.08;margin:7px 0}.hero p{color:#dceee2;margin:0;max-width:620px}.chips{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}.chip{padding:8px 11px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff25;font-size:12px}
-main{padding:18px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:8px 0 12px}.section-head h3{margin:0;font-size:21px}.section-head small{color:var(--muted)}
-.days{display:flex;gap:8px;overflow:auto;padding:2px 0 7px;scrollbar-width:none}.days::-webkit-scrollbar{display:none}.day{flex:0 0 auto;border:1px solid var(--line);background:white;color:var(--ink);border-radius:13px;padding:10px 15px;font-weight:750}.day.active{background:var(--green);border-color:var(--green);color:#fff}
-.menu-card,.feature,.order-card{background:white;border:1px solid #e8ece7;border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-top:14px}.menu-title{display:flex;justify-content:space-between;gap:12px;align-items:start}.menu-title h4{margin:0;font-size:21px}.price{background:#edf7ef;color:var(--green);padding:7px 10px;border-radius:10px;font-weight:900;white-space:nowrap}.label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:17px}.food{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.food:last-child{border-bottom:0}.food b{font-size:14px}.order{width:100%;margin-top:14px;border:0;background:var(--green);color:#fff;border-radius:14px;padding:13px;font-weight:900}
-.saturday{border:2px solid #f3b13a;background:linear-gradient(145deg,#fffaf0,#fff);}.saturday .icon{font-size:30px}.saturday h4{font-size:22px;margin:5px 0}.saturday p{color:var(--muted);margin:0;line-height:1.5}.gold{background:var(--gold);color:#183c2a}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.feature{margin:0}.feature strong{display:block;margin:7px 0}.feature p{font-size:13px;color:var(--muted);line-height:1.45;margin:0}
-.note{background:#eef6f0;border:1px solid #d7e9dc;border-radius:17px;padding:14px;margin-top:14px;font-size:13px;line-height:1.5}
-.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:10;padding:8px max(14px,calc((100vw - 980px)/2 + 14px));display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bottom button{border:0;background:transparent;color:var(--muted);padding:7px;border-radius:12px;font-size:11px;font-weight:800}.bottom button.active{color:var(--green);background:#eef6f0}.bottom span{display:block;font-size:19px;margin-bottom:2px}
-.modal{display:none;position:fixed;inset:0;background:#0008;z-index:30;padding:15px;align-items:end}.modal.show{display:flex}.sheet{width:100%;max-width:720px;margin:auto;background:white;border-radius:25px 25px 0 0;max-height:92vh;overflow:auto;padding:20px}.sheettop{display:flex;justify-content:space-between;align-items:center}.close{border:0;border-radius:50%;width:38px;height:38px}.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px}.field select,.field input{width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:12px;background:white}.summary{background:#f6f8f5;border-radius:16px;padding:14px;margin-top:14px}.total{display:flex;justify-content:space-between;font-weight:900;font-size:18px}.confirm{width:100%;border:0;background:var(--green);color:#fff;border-radius:14px;padding:14px;font-weight:900;margin-top:12px}
-.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#173b29;color:#fff;padding:12px 16px;border-radius:14px;display:none;z-index:50;box-shadow:var(--shadow);font-size:13px}.toast.show{display:block}
-@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h2{font-size:28px}.top{border-radius:0 0 24px 24px}}
+:root{--green:#0b5b36;--green2:#117348;--gold:#f0a52b;--cream:#f7f5ee;--ink:#173b29;--muted:#66756d;--line:#e5e9e4;--white:#fff;--shadow:0 10px 30px rgba(17,55,38,.10)}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{text-decoration:none;color:inherit}.wrap{max-width:980px;margin:auto}
+.top{background:linear-gradient(135deg,#073e25,#0b5b36 65%,#167448);color:#fff;padding:18px 18px 26px;border-radius:0 0 28px 28px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{display:flex;gap:11px;align-items:center}.mark{width:46px;height:46px;border-radius:15px;background:var(--gold);display:grid;place-items:center;font-size:25px}.brand h1{margin:0;font-size:21px}.brand span{font-size:12px;color:#d8efdf}.mode{border:1px solid #ffffff30;background:#ffffff14;color:#fff;border-radius:13px;padding:10px 12px;font-weight:800}
+main{padding:18px}.hero h2{font-size:30px;line-height:1.08;margin:22px 0 6px}.hero p{margin:0;color:#dceee2}.days{display:flex;gap:8px;overflow:auto;margin:18px 0 5px}.day{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px 14px;font-weight:800;white-space:nowrap}.day.active{background:var(--green);border-color:var(--green);color:#fff}
+.card{background:#fff;border:1px solid #e8ece7;border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-top:14px}.menu-title{display:flex;justify-content:space-between;gap:12px}.menu-title h3{margin:0 0 3px}.muted{color:var(--muted)}.price{background:#edf7ef;color:var(--green);padding:7px 10px;border-radius:10px;font-weight:900}.label{font-size:12px;font-weight:900;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-top:17px}.food{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}.btn{width:100%;border:0;border-radius:14px;padding:14px;font-weight:900;cursor:pointer}.primary{background:var(--green);color:#fff}.gold{background:var(--gold);color:var(--ink)}.special{border:2px solid #f0b039}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feature{padding:15px;background:#fff;border:1px solid var(--line);border-radius:17px}.feature strong{display:block;margin:5px 0}.feature p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:1000;padding:15px;align-items:end}.modal.show{display:flex}.sheet{width:100%;max-width:720px;margin:auto;background:#fff;border-radius:25px 25px 0 0;padding:20px;max-height:92vh;overflow:auto}.close{float:right;border:0;border-radius:50%;width:36px;height:36px}.field{margin:11px 0}.field label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:12px;background:#fff}.summary{background:#f5f8f5;border-radius:15px;padding:14px}.sumrow{display:flex;justify-content:space-between;font-weight:900}.status{margin-top:13px;background:#eef7f0;border:1px solid #d7e9dc;border-radius:16px;padding:14px}.progress{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.step{padding:9px 6px;text-align:center;border-radius:11px;background:#edf0ed;font-size:11px;font-weight:800}.step.done{background:#cfe8d6;color:#0b5b36}.step.current{background:#0b5b36;color:#fff}
+#map{height:360px;border-radius:18px;margin-top:12px;border:1px solid var(--line)}.map-note{font-size:12px;color:var(--muted);margin-top:8px}.pill{display:inline-flex;gap:6px;align-items:center;background:#edf7ef;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.driver-shell{min-height:100vh;background:var(--cream)}.driver-head{background:var(--green);color:white;padding:20px}.driver-main{padding:18px;max-width:980px;margin:auto}.driver-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.switch{background:#fff;border:1px solid var(--line);padding:14px;border-radius:15px}.switch b{display:block}.location-card{display:flex;justify-content:space-between;align-items:center;gap:10px}.gps-on{color:var(--green);font-weight:900}.gps-off{color:#a34a31;font-weight:900}
+.footer{text-align:center;padding:30px 15px;color:var(--muted);font-size:12px}
+.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#173b29;color:#fff;padding:11px 15px;border-radius:13px;display:none;z-index:2000}.toast.show{display:block}
+@media(max-width:700px){.features{grid-template-columns:1fr}.progress{grid-template-columns:1fr 1fr}.top{border-radius:0 0 22px 22px}}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="top">
- <div class="topbar">
-  <div class="brand"><div class="mark">🍽️</div><div><h1>Punto Verde Express</h1><span>Menús & Parrillas</span></div></div>
-  <button class="cartbtn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
- </div>
- <div class="hero">
-  <div class="eyebrow">Guadalupe · La Libertad</div>
-  <h2>Tu menú de la semana,<br>tu parrilla del sábado.</h2>
-  <p>Consulta la oferta antes de pedir y elige delivery o recojo de forma sencilla.</p>
-  <div class="chips"><div class="chip">🍲 Menú casero</div><div class="chip">📲 Pedido fácil</div><div class="chip">🔥 Parrillas sábado</div></div>
- </div>
-</header>
-
-<main id="inicio">
- <div class="section-head"><h3>Menú de la semana</h3><small>Referencial: S/12</small></div>
- <div class="days" id="days"></div>
- <section id="menu"></section>
-
- <section class="menu-card saturday">
-  <div class="icon">🔥</div><h4>Especial de sábado</h4>
-  <p>Los sábados ofrecemos únicamente parrillas. La composición y el precio se comunicarán semanalmente.</p>
-  <button class="order gold" onclick="openOrder('Parrilla del sábado')">Consultar / reservar parrilla</button>
- </section>
-
- <div class="grid">
-  <div class="feature"><span>📲</span><strong>Pedido anticipado</strong><p>Consulta el menú y deja tu pedido encaminado antes del almuerzo.</p></div>
-  <div class="feature"><span>🛵</span><strong>Delivery</strong><p>Tarifa de prototipo: S/3 Guadalupe y S/5 Chepén.</p></div>
-  <div class="feature"><span>🏪</span><strong>Recojo</strong><p>Elige recoger tu pedido cuando te resulte más conveniente.</p></div>
- </div>
-
- <div class="note"><b>ℹ️ Información importante:</b> S/12 es el precio referencial del menú. Las tarifas de delivery del prototipo y los precios finales deben validarse comercialmente.</div>
-
- <section class="order-card" id="estado">
-  <div class="section-head"><h3>📦 Estado del pedido</h3></div>
-  <div id="statusBox"><p style="color:var(--muted);margin:0">Aún no tienes un pedido de prueba.</p></div>
- </section>
-</main>
-</div>
-
-<nav class="bottom"><button class="active" onclick="go('inicio')"><span>🏠</span>Inicio</button><button onclick="openOrder('Nuevo pedido')"><span>🛒</span>Pedido</button><button onclick="go('estado')"><span>📦</span>Estado</button></nav>
+<div id="app"></div>
 <div id="toast" class="toast"></div>
-
-<div class="modal" id="modal"><div class="sheet">
- <div class="sheettop"><div><b style="font-size:21px">🛒 Tu pedido</b><div id="orderTitle" style="font-size:13px;color:var(--muted)"></div></div><button class="close" onclick="closeOrder()">✕</button></div>
- <div class="field"><label>Entrada</label><select id="entry"></select></div>
- <div class="field"><label>Segundo</label><select id="main"></select></div>
- <div class="field"><label>Modalidad</label><select id="delivery"><option value="delivery">🛵 Delivery</option><option value="pickup">🏪 Recojo</option></select></div>
- <div class="field"><label>Zona</label><select id="zone"><option>Guadalupe</option><option>Chepén</option></select></div>
- <div class="field"><label>Hora aproximada</label><input id="time" type="time"></div>
- <div class="summary"><div class="total"><span>Total estimado</span><span>S/<span id="total">12.00</span></span></div><small style="color:var(--muted)">Menú S/12 + delivery según zona, si corresponde.</small></div>
- <button class="confirm" onclick="confirmOrder()">Confirmar pedido</button>
-</div></div>
-
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const menus={
 "Lunes":{e:["Sopa de pollo","Papa a la huancaína","Causa de pollo"],m:["Arroz con pollo","Ají de gallina","Tallarines rojos con pollo"]},
@@ -90,40 +37,112 @@ const menus={
 "Viernes":{e:["Chilcano de pescado","Causa de atún","Papa rellena"],m:["Seco de cabrito","Lomo saltado","Pescado sudado"]},
 "Sábado":{e:[],m:[]}
 };
-let current=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][new Date().getDay()-1]||"Lunes";
-let cartCount=0;
-
-const days=document.getElementById("days");
-Object.keys(menus).forEach(d=>{const b=document.createElement("button");b.className="day"+(d===current?" active":"");b.textContent=d;b.onclick=()=>selectDay(d,b);days.appendChild(b)});
-function selectDay(d,b){current=d;document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
-function render(){
- const x=menus[current], el=document.getElementById("menu");
- if(current==="Sábado"){el.innerHTML='<div class="menu-card saturday"><div class="icon">🔥</div><h4>Parrillas del sábado</h4><p>Oferta especial. Composición y precio comunicados semanalmente.</p></div>';return}
- el.innerHTML=`<div class="menu-card"><div class="menu-title"><div><h4>Menú del ${current}</h4><small style="color:var(--muted)">Casero & criollo</small></div><div class="price">S/12</div></div>
- <div class="label">Entradas</div>${x.e.map(i=>`<div class="food"><b>${i}</b><span>✓</span></div>`).join("")}
- <div class="label">Segundos</div>${x.m.map(i=>`<div class="food"><b>${i}</b><span>✓</span></div>`).join("")}
- <button class="order" onclick="openOrder('Menú del ${current}')">Elegir este menú</button></div>`;
+const statusNames={received:"Recibido",accepted:"Aceptado",preparing:"Preparando",ready:"Listo",picked_up:"Recogido",on_the_way:"En camino",delivered:"Entregado",cancelled:"Cancelado"};
+let current = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][new Date().getDay()-1] || "Lunes";
+let clientSocket=null, driverSocket=null, driverWatch=null, driverMap=null, customerMap=null, driverMarker=null;
+const savedOrder = localStorage.getItem("pvx_order");
+function toast(msg){const x=document.getElementById("toast");x.textContent=msg;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2200)}
+function dayButtons(){return Object.keys(menus).map(d=>`<button class="day ${d===current?"active":""}" onclick="selectDay('${d}')">${d}</button>`).join("")}
+function menuHtml(){
+ const x=menus[current];
+ if(current==="Sábado") return `<div class="card special"><h3>🔥 Especial de sábado</h3><p class="muted">Parrillas únicamente. La composición y el precio se comunicarán semanalmente.</p><button class="btn gold" onclick="openOrder(true)">Consultar / reservar parrilla</button></div>`;
+ return `<div class="card"><div class="menu-title"><div><h3>Menú del ${current}</h3><span class="muted">Menú casero y criollo</span></div><div class="price">S/12</div></div>
+ <div class="label">Entradas</div>${x.e.map(v=>`<div class="food"><b>${v}</b><span>✓</span></div>`).join("")}
+ <div class="label">Segundos</div>${x.m.map(v=>`<div class="food"><b>${v}</b><span>✓</span></div>`).join("")}
+ <button class="btn primary" style="margin-top:14px" onclick="openOrder(false)">🛒 Elegir este menú</button></div>`;
 }
-function openOrder(title){
- const x=menus[current];document.getElementById("modal").classList.add("show");document.getElementById("orderTitle").textContent=title;
- document.getElementById("entry").innerHTML=(x.e.length?x.e:["Consultar oferta"]).map(i=>`<option>${i}</option>`).join("");
- document.getElementById("main").innerHTML=(x.m.length?x.m:["Parrilla del sábado"]).map(i=>`<option>${i}</option>`).join("");
- updateTotal();
+function customerUI(){
+ document.getElementById("app").innerHTML=`
+ <header class="top"><div class="wrap"><div class="topbar"><div class="brand"><div class="mark">🍽️</div><div><h1>Punto Verde Express</h1><span>Menús & Parrillas</span></div></div><button class="mode" onclick="goDriver()">🛵 Repartidor</button></div>
+ <div class="hero"><h2>Tu menú de la semana,<br>tu parrilla del sábado.</h2><p>Consulta antes de pedir y sigue tu entrega en tiempo real.</p></div></div></header>
+ <main class="wrap"><div class="days">${dayButtons()}</div><section id="menu">${menuHtml()}</section>
+ <div class="features"><div class="feature">📲<strong>Pedido anticipado</strong><p>Consulta el menú y confirma tu almuerzo.</p></div><div class="feature">🛵<strong>Delivery</strong><p>S/3 Guadalupe · S/5 Chepén (referencial).</p></div><div class="feature">🏪<strong>Recojo</strong><p>También puedes recoger tu pedido.</p></div></div>
+ <section class="card"><h3>📦 Seguimiento de pedido</h3><div id="tracking">${savedOrder ? `<button class="btn primary" onclick="loadTracking()">Ver mi pedido ${JSON.parse(savedOrder).id}</button>` : '<p class="muted">Cuando hagas un pedido, aparecerá aquí el seguimiento.</p>'}</div></section></main><div class="footer">Punto Verde Express · Guadalupe y Chepén</div>`;
 }
-function closeOrder(){document.getElementById("modal").classList.remove("show")}
-function updateTotal(){const d=document.getElementById("delivery").value,z=document.getElementById("zone").value;const t=12+(d==="delivery"?(z==="Guadalupe"?3:5):0);document.getElementById("total").textContent=t.toFixed(2)}
-delivery.onchange=updateTotal;zone.onchange=updateTotal;
-function confirmOrder(){
- cartCount=1;document.getElementById("cartCount").textContent=cartCount;
- const z=zone.value,d=delivery.value,t=document.getElementById("total").textContent;
- document.getElementById("statusBox").innerHTML=`<div style="background:#eef6f0;border:1px solid #d7e9dc;border-radius:15px;padding:14px"><b>✅ Pedido recibido</b><p style="margin:7px 0;color:var(--muted)">${entry.value} + ${main.value}<br>${d==="delivery"?"🛵 Delivery":"🏪 Recojo"} · ${z}<br>Total: <b>S/${t}</b></p><b>🟢 Estado: pendiente de preparación</b></div>`;
- closeOrder();toast("Pedido registrado correctamente");go("estado");
+function selectDay(d){current=d;customerUI()}
+function openOrder(parrilla){
+ const x=menus[current];
+ const modal=document.createElement("div"); modal.className="modal show"; modal.id="orderModal";
+ modal.innerHTML=`<div class="sheet"><button class="close" onclick="closeOrder()">✕</button><h2>🛒 ${parrilla?"Reserva de parrilla":"Tu pedido"}</h2>
+ ${parrilla ? '<div class="status"><b>🔥 Parrilla del sábado</b><br><span class="muted">Composición y precio se comunicarán semanalmente.</span></div>' : `
+ <div class="field"><label>Tu nombre</label><input id="cname" placeholder="Nombre"></div>
+ <div class="field"><label>Entrada</label><select id="entry">${x.e.map(v=>`<option>${v}</option>`).join("")}</select></div>
+ <div class="field"><label>Segundo</label><select id="mainDish">${x.m.map(v=>`<option>${v}</option>`).join("")}</select></div>`}
+ <div class="field"><label>Modalidad</label><select id="delivery"><option value="delivery">🛵 Delivery</option><option value="pickup">🏪 Recojo</option></select></div>
+ <div class="field"><label>Zona</label><select id="zone"><option>Guadalupe</option><option>Chepén</option></select></div>
+ <div class="field"><label>Hora aproximada</label><input id="time" type="time"></div>
+ <div class="summary"><div class="sumrow"><span>Total referencial</span><span>S/<span id="total">12.00</span></span></div><small class="muted">Delivery: S/3 Guadalupe / S/5 Chepén. Tarifas referenciales.</small></div>
+ <button class="btn primary" style="margin-top:12px" onclick="submitOrder(${parrilla})">Confirmar pedido</button></div>`;
+ document.body.appendChild(modal);
+ document.getElementById("delivery").onchange=updateTotal;document.getElementById("zone").onchange=updateTotal;updateTotal();
 }
-function openCart(){toast(cartCount?"Tienes 1 pedido en proceso":"Tu carrito está vacío")}
-function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2200)}
-function go(id){document.getElementById(id).scrollIntoView({behavior:"smooth",block:"start"})}
-render();
-if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(()=>{})}
+function updateTotal(){const d=document.getElementById("delivery")?.value,z=document.getElementById("zone")?.value;if(!d)return;document.getElementById("total").textContent=(12+(d==="delivery"?(z==="Guadalupe"?3:5):0)).toFixed(2)}
+function closeOrder(){document.getElementById("orderModal")?.remove()}
+async function submitOrder(parrilla){
+ const d=document.getElementById("delivery").value,z=document.getElementById("zone").value;
+ const body={customerName:document.getElementById("cname")?.value||"Cliente",day:current,entry:document.getElementById("entry")?.value||"Parrilla del sábado",main:document.getElementById("mainDish")?.value||"Parrilla del sábado",zone:z,delivery:d,time:document.getElementById("time").value,total:12+(d==="delivery"?(z==="Guadalupe"?3:5):0)};
+ const r=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const data=await r.json();
+ localStorage.setItem("pvx_order",JSON.stringify(data.order));closeOrder();toast("Pedido registrado: "+data.order.id);customerUI();loadTracking();
+}
+async function loadTracking(){
+ const saved=JSON.parse(localStorage.getItem("pvx_order")||"null");if(!saved)return;
+ const r=await fetch("/api/orders/"+saved.id);if(!r.ok){toast("No se encontró el pedido");return}
+ const d=await r.json();
+ renderTracking(d.order,d.driverLocation);
+ clientSocket ||= io();
+ clientSocket.off("driver-location");clientSocket.off("order-status");
+ clientSocket.emit("join-order",{orderId:d.order.id});
+ clientSocket.on("driver-location",loc=>renderTracking(saved,{...loc}));
+ clientSocket.on("order-status",x=>{const o={...saved,status:x.status};localStorage.setItem("pvx_order",JSON.stringify(o));renderTracking(o)});
+}
+function renderTracking(order,loc){
+ const el=document.getElementById("tracking"); if(!el)return;
+ const steps=["received","preparing","picked_up","on_the_way","delivered"];
+ const idx=Math.max(0,steps.indexOf(order.status));
+ const progress=steps.map((s,i)=>`<div class="step ${i<idx?"done":""} ${s===order.status?"current":""}">${statusNames[s]}</div>`).join("");
+ el.innerHTML=`<div class="status"><span class="pill">📦 ${order.id}</span><h4 style="margin:10px 0 4px">${statusNames[order.status]}</h4><p class="muted" style="margin:0">${order.entry} + ${order.main}<br>${order.delivery==="delivery"?"🛵 Delivery":"🏪 Recojo"} · ${order.zone}<br>Total: <b>S/${order.total.toFixed(2)}</b></p>
+ <div class="progress">${progress}</div></div>
+ <div id="customerMap"></div><div class="map-note">${loc ? "📍 Ubicación del repartidor actualizada en tiempo real." : "🛵 El mapa aparecerá cuando el repartidor inicie la entrega y comparta su ubicación."}</div>`;
+ if(loc) setTimeout(()=>initCustomerMap(loc,order),50);
+}
+function initCustomerMap(loc,order){
+ const el=document.getElementById("customerMap");if(!el)return;el.innerHTML='<div id="map"></div>';
+ if(customerMap)customerMap.remove();
+ customerMap=L.map("map").setView([loc.lat,loc.lng],15);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap"}).addTo(customerMap);
+ driverMarker=L.marker([loc.lat,loc.lng]).addTo(customerMap).bindPopup("🛵 Repartidor").openPopup();
+}
+function goDriver(){location.href=location.pathname+"?modo=repartidor"}
+function driverUI(){
+ document.getElementById("app").innerHTML=`
+ <div class="driver-shell"><div class="driver-head"><div class="wrap"><div class="topbar"><div><h2 style="margin:0">🛵 Panel del repartidor</h2><small>Comparte tu GPS con el cliente en tiempo real</small></div><button class="mode" onclick="location.href=location.pathname">👤 Cliente</button></div></div></div>
+ <div class="driver-main"><div class="card"><h3>Pedido</h3><div class="field"><label>Código del pedido</label><input id="driverOrder" placeholder="PV-123456" value="${savedOrder?JSON.parse(savedOrder).id:""}"></div><div class="driver-actions"><button class="btn primary" onclick="startDriver()">📍 Iniciar GPS</button><button class="btn gold" onclick="stopDriver()">⏹ Detener GPS</button></div><div class="location-card" style="margin-top:12px"><span>Estado GPS</span><span id="gpsState" class="gps-off">Desactivado</span></div></div>
+ <div class="card"><h3>Estado del pedido</h3><select id="driverStatus" style="width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:12px"><option value="accepted">Aceptado</option><option value="preparing">Preparando</option><option value="ready">Listo</option><option value="picked_up">Pedido recogido</option><option value="on_the_way">En camino</option><option value="delivered">Entregado</option></select><button class="btn primary" style="margin-top:10px" onclick="sendStatus()">Actualizar estado</button></div>
+ <div class="card"><h3>🗺️ Tu ubicación</h3><div id="driverMap"></div><p class="map-note">El GPS del teléfono debe estar activado. El navegador pedirá permiso para acceder a la ubicación.</p></div></div></div>`;
+}
+function startDriver(){
+ const orderId=document.getElementById("driverOrder").value.trim();if(!orderId){toast("Escribe el código del pedido");return}
+ if(!navigator.geolocation){toast("Este navegador no admite GPS");return}
+ driverSocket ||= io();driverSocket.emit("join-order",{orderId});
+ driverSocket.off("connect"); // avoid duplicate status text
+ driverWatch=navigator.geolocation.watchPosition(pos=>{
+   const loc={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy,timestamp:new Date().toISOString()};
+   document.getElementById("gpsState").textContent="Activo";document.getElementById("gpsState").className="gps-on";
+   driverSocket.emit("driver-location",{orderId,...loc});updateDriverMap(loc);
+ },err=>{
+   document.getElementById("gpsState").textContent="Error GPS";document.getElementById("gpsState").className="gps-off";
+   toast(err.code===1?"Debes permitir la ubicación en el navegador.":"No se pudo obtener la ubicación.");
+ },{enableHighAccuracy:true,maximumAge:3000,timeout:10000});
+ toast("GPS activado");
+}
+function stopDriver(){if(driverWatch!==null){navigator.geolocation.clearWatch(driverWatch);driverWatch=null}if(document.getElementById("gpsState")){document.getElementById("gpsState").textContent="Desactivado";document.getElementById("gpsState").className="gps-off"}toast("GPS detenido")}
+function updateDriverMap(loc){
+ if(!driverMap){driverMap=L.map("driverMap").setView([loc.lat,loc.lng],16);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap"}).addTo(driverMap)}
+ if(!driverMarker)driverMarker=L.marker([loc.lat,loc.lng]).addTo(driverMap);else driverMarker.setLatLng([loc.lat,loc.lng]);
+ driverMap.setView([loc.lat,loc.lng]);
+}
+function sendStatus(){const orderId=document.getElementById("driverOrder").value.trim();if(!orderId){toast("Escribe el código del pedido");return}driverSocket ||= io();driverSocket.emit("driver-status",{orderId,status:document.getElementById("driverStatus").value});toast("Estado actualizado")}
+if(new URLSearchParams(location.search).get("modo")==="repartidor") driverUI(); else customerUI();
 </script>
 </body>
 </html>
