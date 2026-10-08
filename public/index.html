@@ -2,44 +2,83 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Punto Verde Express - Menús & Parrillas</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b5b36">
+<meta name="description" content="Punto Verde Express — Menús & Parrillas">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Punto Verde Express</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f5f3ed;color:#173b29}
-header{background:#0d5b35;color:white;padding:22px 18px 26px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
-.wrap{max-width:920px;margin:auto}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:#f3a62b;display:grid;place-items:center;font-size:25px}
-h1{margin:0;font-size:25px}header p{margin:4px 0 0;color:#d9f0df}
-main{padding:18px}.notice{background:#fff;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 3px 12px #173b2912}
-.days{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.day{border:1px solid #cdd9d0;background:white;border-radius:12px;padding:10px 14px;white-space:nowrap;color:#173b29}.day.active{background:#0d5b35;color:white;border-color:#0d5b35}
-.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 3px 14px #173b2910}.card h2{margin:0 0 8px}.tag{display:inline-block;background:#e8f3eb;border-radius:999px;padding:5px 10px;font-size:13px;margin:3px 4px 3px 0}.section{font-weight:800;margin-top:15px}.item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf0ed}.item:last-child{border-bottom:0}.price{font-weight:800;white-space:nowrap}.select{display:grid;grid-template-columns:1fr 1fr;gap:10px}.select button,.primary{border:0;border-radius:13px;padding:13px;font-weight:700;cursor:pointer}.primary{background:#0d5b35;color:white;width:100%;margin-top:12px}.secondary{background:#f0a52b;color:#173b29}.muted{color:#64736a;font-size:14px}.special{border:2px solid #f0a52b}.special h2{color:#9b5a00}
-.modal{display:none;position:fixed;inset:0;background:#0007;z-index:20;padding:16px;align-items:flex-end}.modal.show{display:flex}.sheet{background:white;border-radius:22px 22px 0 0;width:100%;max-width:700px;margin:auto;padding:20px;max-height:90vh;overflow:auto}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0}.row select,.row input{width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:10px;background:white}.close{float:right;border:0;background:#eee;border-radius:50%;width:36px;height:36px}
-.status{padding:14px;border-radius:14px;background:#eef7f0;margin-top:12px}
-footer{text-align:center;color:#64736a;padding:30px 15px;font-size:13px}
-@media(max-width:600px){.select{grid-template-columns:1fr}h1{font-size:21px}}
+:root{--green:#0b5b36;--green2:#0f7143;--cream:#f7f5ee;--gold:#f1a52a;--ink:#173b29;--muted:#66756d;--white:#fff;--line:#e5e9e4;--shadow:0 10px 30px rgba(17,55,38,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:78px}
+button,input,select{font:inherit}.app{max-width:980px;margin:auto}
+.top{background:linear-gradient(135deg,#073e25,#0b5b36 65%,#167448);color:white;padding:18px 18px 28px;border-radius:0 0 28px 28px;box-shadow:var(--shadow)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:11px}.mark{width:46px;height:46px;border-radius:15px;background:var(--gold);display:grid;place-items:center;font-size:25px;box-shadow:0 5px 15px #0003}.brand h1{font-size:20px;line-height:1.05;margin:0}.brand span{display:block;color:#d8efdf;font-size:12px;margin-top:4px}
+.cartbtn{border:0;background:#ffffff18;color:white;border:1px solid #ffffff2e;border-radius:14px;padding:10px 13px;font-weight:800}.hero{margin-top:24px}.eyebrow{color:#ffd07a;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}.hero h2{font-size:31px;line-height:1.08;margin:7px 0}.hero p{color:#dceee2;margin:0;max-width:620px}.chips{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}.chip{padding:8px 11px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff25;font-size:12px}
+main{padding:18px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:8px 0 12px}.section-head h3{margin:0;font-size:21px}.section-head small{color:var(--muted)}
+.days{display:flex;gap:8px;overflow:auto;padding:2px 0 7px;scrollbar-width:none}.days::-webkit-scrollbar{display:none}.day{flex:0 0 auto;border:1px solid var(--line);background:white;color:var(--ink);border-radius:13px;padding:10px 15px;font-weight:750}.day.active{background:var(--green);border-color:var(--green);color:#fff}
+.menu-card,.feature,.order-card{background:white;border:1px solid #e8ece7;border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-top:14px}.menu-title{display:flex;justify-content:space-between;gap:12px;align-items:start}.menu-title h4{margin:0;font-size:21px}.price{background:#edf7ef;color:var(--green);padding:7px 10px;border-radius:10px;font-weight:900;white-space:nowrap}.label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:17px}.food{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.food:last-child{border-bottom:0}.food b{font-size:14px}.order{width:100%;margin-top:14px;border:0;background:var(--green);color:#fff;border-radius:14px;padding:13px;font-weight:900}
+.saturday{border:2px solid #f3b13a;background:linear-gradient(145deg,#fffaf0,#fff);}.saturday .icon{font-size:30px}.saturday h4{font-size:22px;margin:5px 0}.saturday p{color:var(--muted);margin:0;line-height:1.5}.gold{background:var(--gold);color:#183c2a}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.feature{margin:0}.feature strong{display:block;margin:7px 0}.feature p{font-size:13px;color:var(--muted);line-height:1.45;margin:0}
+.note{background:#eef6f0;border:1px solid #d7e9dc;border-radius:17px;padding:14px;margin-top:14px;font-size:13px;line-height:1.5}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:10;padding:8px max(14px,calc((100vw - 980px)/2 + 14px));display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bottom button{border:0;background:transparent;color:var(--muted);padding:7px;border-radius:12px;font-size:11px;font-weight:800}.bottom button.active{color:var(--green);background:#eef6f0}.bottom span{display:block;font-size:19px;margin-bottom:2px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:30;padding:15px;align-items:end}.modal.show{display:flex}.sheet{width:100%;max-width:720px;margin:auto;background:white;border-radius:25px 25px 0 0;max-height:92vh;overflow:auto;padding:20px}.sheettop{display:flex;justify-content:space-between;align-items:center}.close{border:0;border-radius:50%;width:38px;height:38px}.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px}.field select,.field input{width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:12px;background:white}.summary{background:#f6f8f5;border-radius:16px;padding:14px;margin-top:14px}.total{display:flex;justify-content:space-between;font-weight:900;font-size:18px}.confirm{width:100%;border:0;background:var(--green);color:#fff;border-radius:14px;padding:14px;font-weight:900;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#173b29;color:#fff;padding:12px 16px;border-radius:14px;display:none;z-index:50;box-shadow:var(--shadow);font-size:13px}.toast.show{display:block}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h2{font-size:28px}.top{border-radius:0 0 24px 24px}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand"><div class="logo">🍽️</div><div><h1>Punto Verde Express</h1><p>Menús & Parrillas · Guadalupe</p></div></div></div></header>
-<main class="wrap">
-<div class="notice"><b>Tu menú de la semana, tu parrilla del sábado.</b><br><span class="muted">Consulta la oferta, elige tu entrada y segundo, y selecciona delivery o recojo.</span></div>
-<div class="days" id="days"></div>
-<section id="menu"></section>
-<section class="card special"><h2>🔥 Parrillas del sábado</h2><p>Oferta especial de sábado. La composición y el precio se comunican semanalmente.</p><button class="primary secondary" onclick="openOrder('Parrilla del sábado')">Consultar / reservar parrilla</button></section>
-<section class="card"><h2>📦 ¿Cómo pedir?</h2><p>1. Revisa el menú y precio. 2. Elige una entrada y un segundo. 3. Selecciona delivery o recojo. 4. Indica una hora aproximada. 5. Revisa el total antes de confirmar.</p><p class="muted">Delivery configurado en el prototipo: S/3 Guadalupe y S/5 Chepén. Son tarifas referenciales pendientes de validación comercial.</p></section>
-<section class="card"><h2>🔎 Estado del pedido</h2><p class="muted">En esta versión puedes registrar una prueba de pedido. El seguimiento operativo real se conectará cuando el servicio esté desplegado con su sistema de pedidos.</p><button class="primary" onclick="showStatus()">Ver estado de prueba</button><div id="status"></div></section>
+<div class="app">
+<header class="top">
+ <div class="topbar">
+  <div class="brand"><div class="mark">🍽️</div><div><h1>Punto Verde Express</h1><span>Menús & Parrillas</span></div></div>
+  <button class="cartbtn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+ </div>
+ <div class="hero">
+  <div class="eyebrow">Guadalupe · La Libertad</div>
+  <h2>Tu menú de la semana,<br>tu parrilla del sábado.</h2>
+  <p>Consulta la oferta antes de pedir y elige delivery o recojo de forma sencilla.</p>
+  <div class="chips"><div class="chip">🍲 Menú casero</div><div class="chip">📲 Pedido fácil</div><div class="chip">🔥 Parrillas sábado</div></div>
+ </div>
+</header>
+
+<main id="inicio">
+ <div class="section-head"><h3>Menú de la semana</h3><small>Referencial: S/12</small></div>
+ <div class="days" id="days"></div>
+ <section id="menu"></section>
+
+ <section class="menu-card saturday">
+  <div class="icon">🔥</div><h4>Especial de sábado</h4>
+  <p>Los sábados ofrecemos únicamente parrillas. La composición y el precio se comunicarán semanalmente.</p>
+  <button class="order gold" onclick="openOrder('Parrilla del sábado')">Consultar / reservar parrilla</button>
+ </section>
+
+ <div class="grid">
+  <div class="feature"><span>📲</span><strong>Pedido anticipado</strong><p>Consulta el menú y deja tu pedido encaminado antes del almuerzo.</p></div>
+  <div class="feature"><span>🛵</span><strong>Delivery</strong><p>Tarifa de prototipo: S/3 Guadalupe y S/5 Chepén.</p></div>
+  <div class="feature"><span>🏪</span><strong>Recojo</strong><p>Elige recoger tu pedido cuando te resulte más conveniente.</p></div>
+ </div>
+
+ <div class="note"><b>ℹ️ Información importante:</b> S/12 es el precio referencial del menú. Las tarifas de delivery del prototipo y los precios finales deben validarse comercialmente.</div>
+
+ <section class="order-card" id="estado">
+  <div class="section-head"><h3>📦 Estado del pedido</h3></div>
+  <div id="statusBox"><p style="color:var(--muted);margin:0">Aún no tienes un pedido de prueba.</p></div>
+ </section>
 </main>
-<footer>Punto Verde Express · Menús & Parrillas</footer>
+</div>
+
+<nav class="bottom"><button class="active" onclick="go('inicio')"><span>🏠</span>Inicio</button><button onclick="openOrder('Nuevo pedido')"><span>🛒</span>Pedido</button><button onclick="go('estado')"><span>📦</span>Estado</button></nav>
+<div id="toast" class="toast"></div>
 
 <div class="modal" id="modal"><div class="sheet">
-<button class="close" onclick="closeOrder()">✕</button><h2>🛒 Hacer pedido</h2>
-<div id="orderTitle" class="muted"></div>
-<div class="row"><label style="width:100%">Entrada<select id="entry"></select></label></div>
-<div class="row"><label style="width:100%">Segundo<select id="main"></select></label></div>
-<div class="row"><label style="width:100%">Modalidad<select id="delivery"><option value="delivery">Delivery</option><option value="pickup">Recojo</option></select></label></div>
-<div class="row"><label style="width:100%">Zona<select id="zone"><option>Guadalupe</option><option>Chepén</option></select></label></div>
-<div class="row"><label style="width:100%">Hora aproximada<input id="time" type="time"></label></div>
-<div class="notice"><b>Total estimado: S/<span id="total">12.00</span></b><br><span class="muted">Menú referencial S/12. El delivery se suma según la zona.</span></div>
-<button class="primary" onclick="confirmOrder()">Confirmar pedido de prueba</button>
+ <div class="sheettop"><div><b style="font-size:21px">🛒 Tu pedido</b><div id="orderTitle" style="font-size:13px;color:var(--muted)"></div></div><button class="close" onclick="closeOrder()">✕</button></div>
+ <div class="field"><label>Entrada</label><select id="entry"></select></div>
+ <div class="field"><label>Segundo</label><select id="main"></select></div>
+ <div class="field"><label>Modalidad</label><select id="delivery"><option value="delivery">🛵 Delivery</option><option value="pickup">🏪 Recojo</option></select></div>
+ <div class="field"><label>Zona</label><select id="zone"><option>Guadalupe</option><option>Chepén</option></select></div>
+ <div class="field"><label>Hora aproximada</label><input id="time" type="time"></div>
+ <div class="summary"><div class="total"><span>Total estimado</span><span>S/<span id="total">12.00</span></span></div><small style="color:var(--muted)">Menú S/12 + delivery según zona, si corresponde.</small></div>
+ <button class="confirm" onclick="confirmOrder()">Confirmar pedido</button>
 </div></div>
 
 <script>
@@ -51,22 +90,40 @@ const menus={
 "Viernes":{e:["Chilcano de pescado","Causa de atún","Papa rellena"],m:["Seco de cabrito","Lomo saltado","Pescado sudado"]},
 "Sábado":{e:[],m:[]}
 };
-let current="Jueves";
+let current=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][new Date().getDay()-1]||"Lunes";
+let cartCount=0;
+
 const days=document.getElementById("days");
-Object.keys(menus).forEach(d=>{let b=document.createElement("button");b.className="day"+(d===current?" active":"");b.textContent=d;b.onclick=()=>selectDay(d,b);days.appendChild(b)});
+Object.keys(menus).forEach(d=>{const b=document.createElement("button");b.className="day"+(d===current?" active":"");b.textContent=d;b.onclick=()=>selectDay(d,b);days.appendChild(b)});
 function selectDay(d,b){current=d;document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
 function render(){
  const x=menus[current], el=document.getElementById("menu");
- if(current==="Sábado"){el.innerHTML=`<div class="card special"><h2>🔥 Especial de sábado</h2><p>Parrillas únicamente. La composición y el precio se definirán y comunicarán semanalmente.</p><button class="primary secondary" onclick="openOrder('Parrilla del sábado')">Consultar / reservar</button></div>`;return}
- el.innerHTML=`<div class="card"><h2>🍲 Menú del ${current}</h2><span class="tag">Menú referencial S/12</span><div class="section">Entradas</div>${x.e.map(i=>`<div class="item"><span>${i}</span></div>`).join("")}<div class="section">Segundos</div>${x.m.map(i=>`<div class="item"><span>${i}</span></div>`).join("")}<button class="primary" onclick="openOrder('Menú del ${current}')">Hacer pedido</button></div>`;
+ if(current==="Sábado"){el.innerHTML='<div class="menu-card saturday"><div class="icon">🔥</div><h4>Parrillas del sábado</h4><p>Oferta especial. Composición y precio comunicados semanalmente.</p></div>';return}
+ el.innerHTML=`<div class="menu-card"><div class="menu-title"><div><h4>Menú del ${current}</h4><small style="color:var(--muted)">Casero & criollo</small></div><div class="price">S/12</div></div>
+ <div class="label">Entradas</div>${x.e.map(i=>`<div class="food"><b>${i}</b><span>✓</span></div>`).join("")}
+ <div class="label">Segundos</div>${x.m.map(i=>`<div class="food"><b>${i}</b><span>✓</span></div>`).join("")}
+ <button class="order" onclick="openOrder('Menú del ${current}')">Elegir este menú</button></div>`;
 }
-function openOrder(title){document.getElementById("modal").classList.add("show");document.getElementById("orderTitle").textContent=title;let x=menus[current];document.getElementById("entry").innerHTML=x.e.map(i=>`<option>${i}</option>`).join("");document.getElementById("main").innerHTML=x.m.map(i=>`<option>${i}</option>`).join("");updateTotal()}
+function openOrder(title){
+ const x=menus[current];document.getElementById("modal").classList.add("show");document.getElementById("orderTitle").textContent=title;
+ document.getElementById("entry").innerHTML=(x.e.length?x.e:["Consultar oferta"]).map(i=>`<option>${i}</option>`).join("");
+ document.getElementById("main").innerHTML=(x.m.length?x.m:["Parrilla del sábado"]).map(i=>`<option>${i}</option>`).join("");
+ updateTotal();
+}
 function closeOrder(){document.getElementById("modal").classList.remove("show")}
-function updateTotal(){let base=12, d=document.getElementById("delivery").value, z=document.getElementById("zone").value;document.getElementById("total").textContent=(base+(d==="delivery"?(z==="Guadalupe"?3:5):0)).toFixed(2)}
-document.getElementById("delivery").onchange=updateTotal;document.getElementById("zone").onchange=updateTotal;
-function confirmOrder(){let zone=document.getElementById("zone").value, d=document.getElementById("delivery").value;document.getElementById("status").innerHTML=`<div class="status"><b>✅ Pedido de prueba registrado</b><br>${document.getElementById("entry").value} + ${document.getElementById("main").value}<br>${d==="delivery"?"Delivery":"Recojo"} · ${zone}<br><span class="muted">Estado: recibido · pendiente de preparación</span></div>`;closeOrder();window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}
-function showStatus(){document.getElementById("status").innerHTML=`<div class="status"><b>📦 Pedido recibido</b><br>Estado de prueba: pendiente de preparación.</div>`}
+function updateTotal(){const d=document.getElementById("delivery").value,z=document.getElementById("zone").value;const t=12+(d==="delivery"?(z==="Guadalupe"?3:5):0);document.getElementById("total").textContent=t.toFixed(2)}
+delivery.onchange=updateTotal;zone.onchange=updateTotal;
+function confirmOrder(){
+ cartCount=1;document.getElementById("cartCount").textContent=cartCount;
+ const z=zone.value,d=delivery.value,t=document.getElementById("total").textContent;
+ document.getElementById("statusBox").innerHTML=`<div style="background:#eef6f0;border:1px solid #d7e9dc;border-radius:15px;padding:14px"><b>✅ Pedido recibido</b><p style="margin:7px 0;color:var(--muted)">${entry.value} + ${main.value}<br>${d==="delivery"?"🛵 Delivery":"🏪 Recojo"} · ${z}<br>Total: <b>S/${t}</b></p><b>🟢 Estado: pendiente de preparación</b></div>`;
+ closeOrder();toast("Pedido registrado correctamente");go("estado");
+}
+function openCart(){toast(cartCount?"Tienes 1 pedido en proceso":"Tu carrito está vacío")}
+function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2200)}
+function go(id){document.getElementById(id).scrollIntoView({behavior:"smooth",block:"start"})}
 render();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(()=>{})}
 </script>
 </body>
 </html>

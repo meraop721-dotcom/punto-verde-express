@@ -1,0 +1,9 @@
+{
+  "name":"Punto Verde Express",
+  "short_name":"Punto Verde",
+  "start_url":"/",
+  "display":"standalone",
+  "background_color":"#f7f5ee",
+  "theme_color":"#0b5b36",
+  "description":"Punto Verde Express — Menús & Parrillas"
+}
