@@ -1,12 +1,72 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Punto Verde Express</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="/socket.io/socket.io.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><style>body{margin:0;font-family:system-ui;background:#f4f7f4;color:#183126}.top{background:#123d2b;color:#fff;padding:20px}.wrap{max-width:1100px;margin:auto;padding:18px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:11px 15px;background:#159447;color:#fff;font-weight:700;cursor:pointer}.light{background:#e7f3eb;color:#123d2b}.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}.card{background:#fff;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 3px 14px #0001}.products{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.product{border:1px solid #e2e9e4;border-radius:15px;padding:14px}.row{display:flex;justify-content:space-between;gap:10px;align-items:center}.pill{display:inline-block;padding:6px 10px;border-radius:20px;background:#e7f3eb}.input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #d8e0da;border-radius:11px;margin:5px 0}#map{height:340px;border-radius:15px}.hidden{display:none}.muted{color:#65756c;font-size:13px}.order{border:1px solid #e0e8e2;padding:12px;border-radius:12px;margin:8px 0}@media(max-width:760px){.grid,.products{grid-template-columns:1fr}}</style></head><body><header class="top"><div class="wrap"><h1>🥗 Punto Verde Express</h1><p>Delivery local en Guadalupe y Chepén</p><div class="tabs"><button class="btn" onclick="role('client')">Cliente</button><button class="btn light" onclick="role('admin')">Administrador</button><button class="btn light" onclick="role('driver')">Repartidor</button></div></div></header><main class="wrap"><section id="client"><div class="grid"><div><div class="card"><h2>¿Qué quieres pedir?</h2><input class="input" id="search" placeholder="Buscar comida..."></div><div id="products" class="products"></div></div><aside><div class="card"><h2>🛒 Carrito</h2><div id="cart">Agrega productos</div><div class="row"><b>Total</b><b id="total">S/ 0.00</b></div><input class="input" id="name" placeholder="Tu nombre"><input class="input" id="address" placeholder="Dirección (ej. Guadalupe, Jr. ...)"><button class="btn" style="width:100%" onclick="checkout()">Confirmar pedido</button></div><div class="card"><h2>📦 Seguimiento</h2><div id="tracking">Aún no tienes pedidos.</div><div id="map" class="hidden"></div></div></aside></div></section><section id="admin" class="hidden"><div class="card"><h2>🧑‍💼 Panel de pedidos</h2><div id="orders"></div></div><div class="card"><h2>🛵 Repartidores conectados</h2><div id="drivers"></div></div></section><section id="driver" class="hidden"><div class="card"><h2>🛵 Panel del repartidor</h2><input class="input" id="driverName" placeholder="Nombre del repartidor"><select class="input" id="driverZone"><option>Guadalupe</option><option>Chepén</option></select><button class="btn" onclick="startDriver()">Conectarme y compartir GPS</button><p id="gps" class="muted">GPS desconectado.</p></div><div class="card"><h2>Pedidos disponibles</h2><div id="driverOrders"></div></div><div class="card"><div id="driverMap" style="height:340px;border-radius:15px"></div></div></section></main><script>
-const products=[['Hamburguesa Clásica',12],['Hamburguesa Especial',16],['Salchipapa',13],['Pollo Broaster',15],['Combo Familiar',32],['Gaseosa',4]];let cart=[],current=null,orders=[],driverWatch=null;const socket=io();let map,marker,driverMap,driverMarker;
-const $=id=>document.getElementById(id);function role(r){['client','admin','driver'].forEach(x=>$(x).classList.toggle('hidden',x!==r));if(r==='admin')renderAdmin();if(r==='driver')renderDriver();}
-function render(){const q=($('search').value||'').toLowerCase();$('products').innerHTML=products.filter(p=>p[0].toLowerCase().includes(q)).map((p,i)=>`<div class="product"><h3>${p[0]}</h3><div class="row"><b>S/ ${p[1].toFixed(2)}</b><button class="btn" onclick="add(${i})">Agregar</button></div></div>`).join('');renderCart()}function add(i){let p=products[i],x=cart.find(x=>x[0]===p[0]);x?x[2]++:cart.push([p[0],p[1],1]);renderCart()}function renderCart(){$('cart').innerHTML=cart.length?cart.map((x,i)=>`<div class="row"><span>${x[0]} × ${x[2]}</span><button class="btn light" onclick="cart.splice(${i},1);renderCart()">−</button></div>`).join(''):'Agrega productos';$('total').textContent='S/ '+cart.reduce((a,x)=>a+x[1]*x[2],0).toFixed(2)}
-async function checkout(){if(!cart.length)return alert('Agrega productos.');if(!/guadalupe|chep[eé]n/i.test($('address').value))return alert('Por ahora entregamos solo en Guadalupe y Chepén. Escribe tu ciudad en la dirección.');const total=cart.reduce((a,x)=>a+x[1]*x[2],0);const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customer:$('name').value,address:$('address').value,items:cart,total})});current=await r.json();cart=[];renderCart();show(current)}
-function show(o){current=o;$('tracking').innerHTML=`<span class="pill">Pedido #${o.id}</span><h3>${o.status}</h3><p>${o.zone} • ${o.address}</p><p class="muted">La ubicación del repartidor se actualiza en tiempo real cuando comparte GPS.</p>`;$('map').classList.remove('hidden');if(!map){map=L.map('map').setView([-7.25,-79.46],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map)}if(o.lat&&o.lng){if(!marker)marker=L.marker([o.lat,o.lng]).addTo(map);else marker.setLatLng([o.lat,o.lng]);map.setView([o.lat,o.lng],14)}}
-function renderAdmin(){$('orders').innerHTML=orders.map(o=>`<div class="order"><b>#${o.id} — ${o.zone}</b><br>${o.customer} — ${o.address}<br><span class="pill">${o.status}</span> <button class="btn light" onclick="setStatus(${o.id},'PREPARANDO')">Preparando</button> <button class="btn" onclick="setStatus(${o.id},'LISTO')">Listo</button></div>`).join('')||'No hay pedidos.'}async function setStatus(id,status){await fetch('/api/orders/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})})}
-function renderDrivers(ds=[]){$('drivers').innerHTML=ds.map(d=>`<div class="order">🛵 ${d.name} — ${d.zone} ${d.lat?`• GPS activo`:''}</div>`).join('')||'Ninguno conectado.'}
-function renderDriver(){if(!driverMap){driverMap=L.map('driverMap').setView([-7.25,-79.46],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(driverMap)}}function startDriver(){if(!navigator.geolocation)return alert('Este dispositivo no permite GPS.');socket.emit('driver:join',{name:$('driverName').value||'Repartidor',zone:$('driverZone').value});driverWatch=navigator.geolocation.watchPosition(pos=>{const p={lat:pos.coords.latitude,lng:pos.coords.longitude,zone:$('driverZone').value};$('gps').textContent=`GPS activo: ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`;if(!driverMarker)driverMarker=L.marker([p.lat,p.lng]).addTo(driverMap);else driverMarker.setLatLng([p.lat,p.lng]);driverMap.setView([p.lat,p.lng],15);const o=orders.find(x=>x.status==='LISTO'&&x.zone===p.zone);if(o)socket.emit('driver:location',{...p,orderId:o.id})},e=>$('gps').textContent='No se pudo obtener el GPS: '+e.message,{enableHighAccuracy:true,maximumAge:3000,timeout:10000})}
-function renderDriverOrders(){$('driverOrders').innerHTML=orders.filter(o=>o.status!=='ENTREGADO').map(o=>`<div class="order"><b>#${o.id}</b> — ${o.zone}<br>${o.address}<br><span class="pill">${o.status}</span></div>`).join('')||'No hay pedidos.'}
-socket.on('orders:init',x=>{orders=x;renderAdmin();renderDriverOrders()});socket.on('order:update',o=>{const i=orders.findIndex(x=>x.id===o.id);i>=0?orders[i]=o:orders.unshift(o);renderAdmin();renderDriverOrders();if(current&&current.id===o.id)show(o)});socket.on('drivers:init',renderDrivers);socket.on('drivers:update',renderDrivers);socket.on('driver:location',p=>{if(current&&current.id===p.orderId)show({...current,...p,status:'EN CAMINO'})});$('search').oninput=render;render();
-</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Punto Verde Express - Menús & Parrillas</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f5f3ed;color:#173b29}
+header{background:#0d5b35;color:white;padding:22px 18px 26px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
+.wrap{max-width:920px;margin:auto}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:#f3a62b;display:grid;place-items:center;font-size:25px}
+h1{margin:0;font-size:25px}header p{margin:4px 0 0;color:#d9f0df}
+main{padding:18px}.notice{background:#fff;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 3px 12px #173b2912}
+.days{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.day{border:1px solid #cdd9d0;background:white;border-radius:12px;padding:10px 14px;white-space:nowrap;color:#173b29}.day.active{background:#0d5b35;color:white;border-color:#0d5b35}
+.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 3px 14px #173b2910}.card h2{margin:0 0 8px}.tag{display:inline-block;background:#e8f3eb;border-radius:999px;padding:5px 10px;font-size:13px;margin:3px 4px 3px 0}.section{font-weight:800;margin-top:15px}.item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf0ed}.item:last-child{border-bottom:0}.price{font-weight:800;white-space:nowrap}.select{display:grid;grid-template-columns:1fr 1fr;gap:10px}.select button,.primary{border:0;border-radius:13px;padding:13px;font-weight:700;cursor:pointer}.primary{background:#0d5b35;color:white;width:100%;margin-top:12px}.secondary{background:#f0a52b;color:#173b29}.muted{color:#64736a;font-size:14px}.special{border:2px solid #f0a52b}.special h2{color:#9b5a00}
+.modal{display:none;position:fixed;inset:0;background:#0007;z-index:20;padding:16px;align-items:flex-end}.modal.show{display:flex}.sheet{background:white;border-radius:22px 22px 0 0;width:100%;max-width:700px;margin:auto;padding:20px;max-height:90vh;overflow:auto}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0}.row select,.row input{width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:10px;background:white}.close{float:right;border:0;background:#eee;border-radius:50%;width:36px;height:36px}
+.status{padding:14px;border-radius:14px;background:#eef7f0;margin-top:12px}
+footer{text-align:center;color:#64736a;padding:30px 15px;font-size:13px}
+@media(max-width:600px){.select{grid-template-columns:1fr}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand"><div class="logo">🍽️</div><div><h1>Punto Verde Express</h1><p>Menús & Parrillas · Guadalupe</p></div></div></div></header>
+<main class="wrap">
+<div class="notice"><b>Tu menú de la semana, tu parrilla del sábado.</b><br><span class="muted">Consulta la oferta, elige tu entrada y segundo, y selecciona delivery o recojo.</span></div>
+<div class="days" id="days"></div>
+<section id="menu"></section>
+<section class="card special"><h2>🔥 Parrillas del sábado</h2><p>Oferta especial de sábado. La composición y el precio se comunican semanalmente.</p><button class="primary secondary" onclick="openOrder('Parrilla del sábado')">Consultar / reservar parrilla</button></section>
+<section class="card"><h2>📦 ¿Cómo pedir?</h2><p>1. Revisa el menú y precio. 2. Elige una entrada y un segundo. 3. Selecciona delivery o recojo. 4. Indica una hora aproximada. 5. Revisa el total antes de confirmar.</p><p class="muted">Delivery configurado en el prototipo: S/3 Guadalupe y S/5 Chepén. Son tarifas referenciales pendientes de validación comercial.</p></section>
+<section class="card"><h2>🔎 Estado del pedido</h2><p class="muted">En esta versión puedes registrar una prueba de pedido. El seguimiento operativo real se conectará cuando el servicio esté desplegado con su sistema de pedidos.</p><button class="primary" onclick="showStatus()">Ver estado de prueba</button><div id="status"></div></section>
+</main>
+<footer>Punto Verde Express · Menús & Parrillas</footer>
+
+<div class="modal" id="modal"><div class="sheet">
+<button class="close" onclick="closeOrder()">✕</button><h2>🛒 Hacer pedido</h2>
+<div id="orderTitle" class="muted"></div>
+<div class="row"><label style="width:100%">Entrada<select id="entry"></select></label></div>
+<div class="row"><label style="width:100%">Segundo<select id="main"></select></label></div>
+<div class="row"><label style="width:100%">Modalidad<select id="delivery"><option value="delivery">Delivery</option><option value="pickup">Recojo</option></select></label></div>
+<div class="row"><label style="width:100%">Zona<select id="zone"><option>Guadalupe</option><option>Chepén</option></select></label></div>
+<div class="row"><label style="width:100%">Hora aproximada<input id="time" type="time"></label></div>
+<div class="notice"><b>Total estimado: S/<span id="total">12.00</span></b><br><span class="muted">Menú referencial S/12. El delivery se suma según la zona.</span></div>
+<button class="primary" onclick="confirmOrder()">Confirmar pedido de prueba</button>
+</div></div>
+
+<script>
+const menus={
+"Lunes":{e:["Sopa de pollo","Papa a la huancaína","Causa de pollo"],m:["Arroz con pollo","Ají de gallina","Tallarines rojos con pollo"]},
+"Martes":{e:["Aguadito de pollo","Papa rellena","Ensalada rusa"],m:["Lomo saltado","Milanesa de pollo","Cau cau"]},
+"Miércoles":{e:["Sopa de verduras","Ocopa","Tamal criollo"],m:["Pescado frito","Arroz chaufa de pollo","Seco de pollo"]},
+"Jueves":{e:["Caldo de gallina","Causa de pollo","Papa a la huancaína"],m:["Arroz con pato","Pollo al horno","Tallarines verdes con pollo"]},
+"Viernes":{e:["Chilcano de pescado","Causa de atún","Papa rellena"],m:["Seco de cabrito","Lomo saltado","Pescado sudado"]},
+"Sábado":{e:[],m:[]}
+};
+let current="Jueves";
+const days=document.getElementById("days");
+Object.keys(menus).forEach(d=>{let b=document.createElement("button");b.className="day"+(d===current?" active":"");b.textContent=d;b.onclick=()=>selectDay(d,b);days.appendChild(b)});
+function selectDay(d,b){current=d;document.querySelectorAll(".day").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
+function render(){
+ const x=menus[current], el=document.getElementById("menu");
+ if(current==="Sábado"){el.innerHTML=`<div class="card special"><h2>🔥 Especial de sábado</h2><p>Parrillas únicamente. La composición y el precio se definirán y comunicarán semanalmente.</p><button class="primary secondary" onclick="openOrder('Parrilla del sábado')">Consultar / reservar</button></div>`;return}
+ el.innerHTML=`<div class="card"><h2>🍲 Menú del ${current}</h2><span class="tag">Menú referencial S/12</span><div class="section">Entradas</div>${x.e.map(i=>`<div class="item"><span>${i}</span></div>`).join("")}<div class="section">Segundos</div>${x.m.map(i=>`<div class="item"><span>${i}</span></div>`).join("")}<button class="primary" onclick="openOrder('Menú del ${current}')">Hacer pedido</button></div>`;
+}
+function openOrder(title){document.getElementById("modal").classList.add("show");document.getElementById("orderTitle").textContent=title;let x=menus[current];document.getElementById("entry").innerHTML=x.e.map(i=>`<option>${i}</option>`).join("");document.getElementById("main").innerHTML=x.m.map(i=>`<option>${i}</option>`).join("");updateTotal()}
+function closeOrder(){document.getElementById("modal").classList.remove("show")}
+function updateTotal(){let base=12, d=document.getElementById("delivery").value, z=document.getElementById("zone").value;document.getElementById("total").textContent=(base+(d==="delivery"?(z==="Guadalupe"?3:5):0)).toFixed(2)}
+document.getElementById("delivery").onchange=updateTotal;document.getElementById("zone").onchange=updateTotal;
+function confirmOrder(){let zone=document.getElementById("zone").value, d=document.getElementById("delivery").value;document.getElementById("status").innerHTML=`<div class="status"><b>✅ Pedido de prueba registrado</b><br>${document.getElementById("entry").value} + ${document.getElementById("main").value}<br>${d==="delivery"?"Delivery":"Recojo"} · ${zone}<br><span class="muted">Estado: recibido · pendiente de preparación</span></div>`;closeOrder();window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}
+function showStatus(){document.getElementById("status").innerHTML=`<div class="status"><b>📦 Pedido recibido</b><br>Estado de prueba: pendiente de preparación.</div>`}
+render();
+</script>
+</body>
+</html>

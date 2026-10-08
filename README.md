@@ -1,19 +1,9 @@
-# Punto Verde Express — Guadalupe + Chepén
+# Punto Verde Express — Menús & Parrillas
+Versión actualizada según el informe del proyecto.
 
-MVP funcional de delivery local.
-
-## Incluye
-- Cliente: catálogo, carrito y pedidos.
-- Restricción de cobertura: Guadalupe y Chepén.
-- Administrador: pedidos y estados.
-- Repartidor: conexión y GPS del navegador.
-- Socket.IO: actualizaciones en tiempo real.
-- Leaflet + OpenStreetMap: mapas.
-
-## Ejecutar
-1. Instalar Node.js 18+.
-2. `npm install`
-3. `npm start`
-4. Abrir `http://localhost:3000`.
-
-Para GPS en producción, usar HTTPS. Esta versión usa memoria del servidor para los pedidos; para operación real hay que conectar una base de datos, autenticación, pagos y despliegue seguro.
+- Menú rotativo lunes a viernes: 3 entradas + 3 segundos.
+- Sábado: parrillas únicamente; composición y precio se comunican semanalmente.
+- Precio referencial del menú: S/12.
+- Delivery de prototipo: S/3 Guadalupe y S/5 Chepén; pendiente de validación.
+- Modalidades: delivery y recojo.
+- Canal principal previsto en el proyecto: WhatsApp.
